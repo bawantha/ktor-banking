@@ -143,7 +143,44 @@ paths:
                   value: "Product not found."
   /transactions:
     # Get Transactions
+
     # Add Transaction
+    post:
+      description: "Route to add a transaction"
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: "#/components/schemas/Transaction"
+        required: true
+      responses:
+        "201":
+          description: "Created"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Transaction added successfully."
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Failed to add transaction."
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Invalid data format."
   /ledger:
     # Get Ledger Items
   /invoices:
