@@ -18,7 +18,46 @@ paths:
                 $ref: "#/components/schemas/Map_String"
   /products:
     # Get Product(s)
-
+    get:
+      description: "Route to get product(s)"
+      parameters:
+        - name: "id"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+        - name: "status"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Product"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Product not found."
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Failed to retrieve product(s)."
     # Add Product
     post:
       description: "Route to add a product"

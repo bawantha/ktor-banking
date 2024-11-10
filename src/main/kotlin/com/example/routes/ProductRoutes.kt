@@ -52,5 +52,32 @@ fun Route.productRoutes(){
             }
         }
         // Route to get product(s)
+        get {
+            try {
+                val id = call.request.queryParameters["id"]
+                val statusParam = call.request.queryParameters["status"]
+
+                if (id != null) {
+                    // Retrieve a product by ID
+                    val product = productsCollection.findOneById(id)
+
+                    if (product != null) {
+                        call.respond(product)
+                    } else {
+                        call.respond(HttpStatusCode.NotFound, "Product not found.")
+                    }
+                } else {
+                    // No ID parameter, retrieve products based on status or all products
+                    val products = if (statusParam != null) {
+                        productsCollection.find(Product::status eq statusParam).toList()
+                    } else {
+                        productsCollection.find().toList()
+                    }
+                    call.respond(HttpStatusCode.OK, products)
+                }
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.InternalServerError, "Failed to retrieve product(s).")
+            }
+        }
     }
 }
