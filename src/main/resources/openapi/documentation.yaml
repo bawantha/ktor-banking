@@ -1,0 +1,179 @@
+openapi: "3.0.3"
+info:
+  title: "FinGenius"
+  description: "Financial Application (Backend)"
+  version: "1.0.0"
+servers:
+  - url: "/"
+paths:
+  /json/kotlinx-serialization:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Map_String"
+  /products:
+    # Get Product(s)
+    # Add Product
+  # Edit Product
+  /transactions:
+    # Get Transactions
+    # Add Transaction
+  /ledger:
+    # Get Ledger Items
+  /invoices:
+    # Get Invoices
+    # Add Invoice
+  /partners:
+    post:
+      description: "Route to add a partner"
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: "#/components/schemas/Partner"
+        required: true
+      responses:
+        "201":
+          description: "Created"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: ""
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: ""
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Invalid input data format."
+components:
+  schemas:
+    Map:
+      type: "object"
+      properties: {}
+    Map_String:
+      type: "string"
+    Product:
+      type: "object"
+      properties:
+        _id:
+          type: "string"
+        name:
+          type: "string"
+        coreCompany:
+          type: "string"
+        rate:
+          type: "string"
+        status:
+          type: "string"
+        taxExempted:
+          type: "string"
+        salesTax:
+          type: "string"
+        notes:
+          type: "string"
+    Transaction:
+      type: "object"
+      properties:
+        _id:
+          type: "string"
+        voucherNo:
+          type: "string"
+        type:
+          type: "string"
+        date:
+          type: "string"
+        paymentTo:
+          type: "string"
+        receiptFrom:
+          type: "string"
+        amount:
+          type: "string"
+        reference:
+          type: "string"
+    InvoiceItem:
+      type: "object"
+      properties:
+        productName:
+          type: "string"
+        quantity:
+          type: "string"
+        rate:
+          type: "string"
+        valueOfSupplies:
+          type: "string"
+        salesTax:
+          type: "string"
+        netAmount:
+          type: "string"
+    Invoice:
+      type: "object"
+      properties:
+        _id:
+          type: "string"
+        type:
+          type: "string"
+        invoiceDate:
+          type: "string"
+        dueDate:
+          type: "string"
+        invoiceNo:
+          type: "string"
+        partnerId:
+          type: "string"
+        creditTerm:
+          type: "string"
+        reference:
+          type: "string"
+        invoiceTotal:
+          type: "string"
+        invoiceItems:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/InvoiceItem"
+    Partner:
+      type: "object"
+      properties:
+        _id:
+          type: "string"
+        type:
+          type: "string"
+        firstName:
+          type: "string"
+        lastName:
+          type: "string"
+        email:
+          type: "string"
+        status:
+          type: "string"
+        contactNo:
+          type: "string"
+        openingBalance:
+          type: "string"
+        address:
+          type: "string"
+        repName:
+          type: "string"
+        repContact:
+          type: "string"
+        repDesignation:
+          type: "string"
