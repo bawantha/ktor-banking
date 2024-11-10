@@ -148,6 +148,46 @@ paths:
     # Get Ledger Items
   /invoices:
     # Get Invoices
+    get:
+      description: "Route to get invoice(s)"
+      parameters:
+        - name: "type"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+        - name: "id"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Invoice not found."
+                Example#2:
+                  value: "Partner not found."
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Failed to retrieve invoice(s)."
     # Add Invoice
     post:
       description: "Route to add an invoice"
