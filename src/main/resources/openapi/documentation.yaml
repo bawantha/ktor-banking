@@ -183,6 +183,53 @@ paths:
                   value: "Invalid data format."
   /ledger:
     # Get Ledger Items
+    get:
+      description: "Route to get ledger items"
+      parameters:
+        - name: "partnerId"
+          in: "query"
+          required: true
+          schema:
+            type: "string"
+        - name: "startDate"
+          in: "query"
+          required: true
+          schema:
+            type: "string"
+        - name: "endDate"
+          in: "query"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Missing End Date"
+                Example#2:
+                  value: "Missing Start Date"
+                Example#3:
+                  value: "Missing Partner ID"
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Failed to retrieve invoices."
   /invoices:
     # Get Invoices
     get:
