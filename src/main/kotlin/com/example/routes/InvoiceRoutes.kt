@@ -20,7 +20,22 @@ fun Route.invoiceRoutes(){
 
     route("/invoices"){
         // Route to add an invoice
-        
+        post {
+            try {
+                val invoice = call.receive<Invoice>()
+
+                // Insert the new invoice into the MongoDB collection
+                val insertResult = invoicesCollection.insertOne(invoice)
+
+                if (insertResult.wasAcknowledged()) {
+                    call.respond(HttpStatusCode.Created, "Invoice added successfully.")
+                } else {
+                    call.respond(HttpStatusCode.InternalServerError, "Failed to add invoice.")
+                }
+            } catch (e: ContentTransformationException) {
+                call.respond(HttpStatusCode.BadRequest, "Invalid data format.")
+            }
+        }
         // Route to get invoice(s)
     }
 }
