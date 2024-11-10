@@ -65,6 +65,51 @@ paths:
               examples:
                 Example#1:
                   value: "Invalid input data format."
+    get:
+      description: "Route to get partner(s)"
+      parameters:
+        - name: "type"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+        - name: "id"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+        - name: "status"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Partner"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Partner not found."
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Failed to retrieve partners."
   /partners/{id}:
       put:
         description: "Route to edit a partner"
