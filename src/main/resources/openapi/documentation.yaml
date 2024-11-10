@@ -57,6 +57,51 @@ paths:
                 Example#1:
                   value: "Invalid product data format."
   # Edit Product
+  /products/{id}:
+    put:
+      description: "Route to edit a product"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: "#/components/schemas/Product"
+        required: true
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Invalid product data format."
+                Example#2:
+                  value: "Missing ID"
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Product updated successfully."
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Product not found."
   /transactions:
     # Get Transactions
     # Add Transaction

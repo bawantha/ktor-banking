@@ -32,7 +32,25 @@ fun Route.productRoutes(){
             }
         }
         // Route to edit a product
+        put("{id}") {
+            val id = call.parameters["id"] ?: return@put call.respond(HttpStatusCode.BadRequest, "Missing ID")
 
+            try {
+                val updatedProduct = call.receive<Product>()
+
+                // Update the product in the MongoDB collection
+                val filter = Product::_id eq id
+                val updateResult = productsCollection.replaceOne(filter, updatedProduct)
+
+                if (updateResult.matchedCount > 0) {
+                    call.respond(HttpStatusCode.OK, "Product updated successfully.")
+                } else {
+                    call.respond(HttpStatusCode.NotFound, "Product not found.")
+                }
+            } catch (e: ContentTransformationException) {
+                call.respond(HttpStatusCode.BadRequest, "Invalid product data format.")
+            }
+        }
         // Route to get product(s)
     }
 }
