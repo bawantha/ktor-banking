@@ -65,6 +65,51 @@ paths:
               examples:
                 Example#1:
                   value: "Invalid input data format."
+  /partners/{id}:
+      put:
+        description: "Route to edit a partner"
+        parameters:
+          - name: "id"
+            in: "path"
+            required: true
+            schema:
+              type: "string"
+        requestBody:
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Partner"
+          required: true
+        responses:
+          "400":
+            description: "Bad Request"
+            content:
+              '*/*':
+                schema:
+                  type: "string"
+                examples:
+                  Example#1:
+                    value: "Invalid input data format."
+                  Example#2:
+                    value: "Missing ID"
+          "200":
+            description: "OK"
+            content:
+              '*/*':
+                schema:
+                  type: "string"
+                examples:
+                  Example#1:
+                    value: "Partner updated successfully."
+          "404":
+            description: "Not Found"
+            content:
+              '*/*':
+                schema:
+                  type: "string"
+                examples:
+                  Example#1:
+                    value: "Partner not found."
 components:
   schemas:
     Map:

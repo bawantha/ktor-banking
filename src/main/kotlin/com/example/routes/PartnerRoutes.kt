@@ -31,6 +31,25 @@ fun Route.partnerRoutes(){
             } catch (e: ContentTransformationException) {
                 call.respond(HttpStatusCode.BadRequest, "Invalid input data format.")
             }
+            put("{id}") {
+                val id = call.parameters["id"] ?: return@put call.respond(HttpStatusCode.BadRequest, "Missing ID")
+
+                try {
+                    val updatedPartner = call.receive<Partner>()
+
+                    // Update the partner in the MongoDB collection
+                    val filter = Partner::_id eq id
+                    val updateResult = partnersCollection.replaceOne(filter, updatedPartner)
+
+                    if (updateResult.matchedCount > 0) {
+                        call.respond(HttpStatusCode.OK, "Partner updated successfully.")
+                    } else {
+                        call.respond(HttpStatusCode.NotFound, "Partner not found.")
+                    }
+                } catch (e: ContentTransformationException) {
+                    call.respond(HttpStatusCode.BadRequest, "Invalid input data format.")
+                }
+            }
     }
         }
 }
