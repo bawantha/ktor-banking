@@ -1,4 +1,4 @@
-package com.exampleroutes
+package com.example.routes
 
 import com.example.models.Partner
 import com.example.models.Transaction
@@ -33,7 +33,7 @@ fun Route.transactionRoutes(){
                 } else {
                     call.respond(HttpStatusCode.InternalServerError, "Failed to add transaction.")
                 }
-            } catch (e: ContentTransformationException) {
+            } catch (e: Exception) {
                 call.respond(HttpStatusCode.BadRequest, "Invalid data format.")
             }
         }
@@ -76,6 +76,7 @@ fun Route.transactionRoutes(){
                         "receipt" -> {
                             partnersCollection.findOneById(transaction.receiptFrom)
                         }
+                        else -> null
                     }
                     val jsonResponse = TransactionJson(partner, transaction)
                     // Add each JsonResponse object to the list

@@ -1,4 +1,4 @@
-package com.exampleroutes
+package com.example.routes
 
 import com.example.models.Partner
 import com.example.models.Invoice
@@ -47,7 +47,8 @@ fun Route.ledgerRoutes(){
                 // Filter the invoices based on the date range
                 val filteredInvoices = allInvoices.filter { invoice ->
                     val invoiceDate = dateFormat.parse(invoice.invoiceDate)
-                    invoiceDate in startDate..endDate
+                    (invoiceDate.after(startDate) || invoiceDate.equals(startDate)) &&
+                    (invoiceDate.before(endDate) || invoiceDate.equals(endDate))
                 }
 
                 // Map all invoices to ledger items
@@ -70,7 +71,8 @@ fun Route.ledgerRoutes(){
                 // Filter the transactions based on the date range
                 val filteredTransactions = allTransactions.filter { transaction ->
                     val date = dateFormat.parse(transaction.date)
-                    date in startDate..endDate
+                    (date.after(startDate) || date.equals(startDate)) &&
+                    (date.before(endDate) || date.equals(endDate))
                 }
 
                 // Map all transactions to ledger items

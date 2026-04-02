@@ -1,6 +1,6 @@
-package com.examplemodules
+package com.example.modules
 
-import com.exampleroutes.partnerRoutes
+import com.example.routes.partnerRoutes
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 

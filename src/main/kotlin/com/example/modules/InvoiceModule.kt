@@ -1,8 +1,8 @@
-package com.examplemodules
+package com.example.modules
 
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
-import com.exampleroutes.invoiceRoutes
+import com.example.routes.invoiceRoutes
 
 fun Application.invoiceModule() {
     routing {

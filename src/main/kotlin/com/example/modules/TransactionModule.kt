@@ -1,8 +1,8 @@
-package com.examplemodules
+package com.example.modules
 
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
-import com.exampleroutes.transactionRoutes
+import com.example.routes.transactionRoutes
 
 fun Application.transactionModule() {
     routing {

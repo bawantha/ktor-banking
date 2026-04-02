@@ -1,4 +1,4 @@
-package com.exampleroutes
+package com.example.routes
 
 import com.example.models.Partner
 import io.ktor.http.*
@@ -28,10 +28,12 @@ fun Route.partnerRoutes(){
                 } else {
                     call.respond(HttpStatusCode.InternalServerError, "Failed to add ${partner.type}.")
                 }
-            } catch (e: ContentTransformationException) {
+            } catch (e: Exception) {
                 call.respond(HttpStatusCode.BadRequest, "Invalid input data format.")
             }
-            put("{id}") {
+        }
+
+        put("{id}") {
                 val id = call.parameters["id"] ?: return@put call.respond(HttpStatusCode.BadRequest, "Missing ID")
 
                 try {
@@ -46,12 +48,12 @@ fun Route.partnerRoutes(){
                     } else {
                         call.respond(HttpStatusCode.NotFound, "Partner not found.")
                     }
-                } catch (e: ContentTransformationException) {
+                } catch (e: Exception) {
                     call.respond(HttpStatusCode.BadRequest, "Invalid input data format.")
                 }
-            }
+        }
 
-            get {
+        get {
                 val type = call.request.queryParameters["type"]
                 val id = call.request.queryParameters["id"]
                 val statusParam = call.request.queryParameters["status"]
@@ -83,5 +85,4 @@ fun Route.partnerRoutes(){
                 }
             }
     }
-        }
 }

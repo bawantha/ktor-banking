@@ -1,8 +1,8 @@
-package com.examplemodules
+package com.example.modules
 
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
-import com.exampleroutes.ledgerRoutes
+import com.example.routes.ledgerRoutes
 
 fun Application.ledgerModule() {
     routing {
