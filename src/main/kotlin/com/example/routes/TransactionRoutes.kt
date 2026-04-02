@@ -1,4 +1,4 @@
-package com.exampleroutes
+package com.example.routes
 
 import com.example.models.Partner
 import com.example.models.Transaction
@@ -76,6 +76,7 @@ fun Route.transactionRoutes(){
                         "receipt" -> {
                             partnersCollection.findOneById(transaction.receiptFrom)
                         }
+                        else -> null
                     }
                     val jsonResponse = TransactionJson(partner, transaction)
                     // Add each JsonResponse object to the list

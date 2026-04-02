@@ -1,7 +1,7 @@
 package com.example
 
-import com.examplemodules.*
-import com.exampleplugins.*
+import com.example.modules.*
+import com.example.plugins.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.swagger.*
 import io.ktor.server.routing.*
