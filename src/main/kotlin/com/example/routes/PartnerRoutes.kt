@@ -1,4 +1,4 @@
-package com.exampleroutes
+package com.example.routes
 
 import com.example.models.Partner
 import io.ktor.http.*
