@@ -19,10 +19,9 @@ import org.litote.kmongo.or
 import java.math.BigDecimal
 
 fun Route.ledgerRoutes(){
-    val database = Database()
-    val invoicesCollection = database.db.getCollection<Invoice>("invoices")
-    val transactionsCollection = database.db.getCollection<Transaction>("transactions")
-    val partnersCollection = database.db.getCollection<Partner>("partners")
+    val invoicesCollection = Database.db.getCollection<Invoice>("invoices")
+    val transactionsCollection = Database.db.getCollection<Transaction>("transactions")
+    val partnersCollection = Database.db.getCollection<Partner>("partners")
 
     route("/ledger"){
         // Route to get ledger items
@@ -94,7 +93,16 @@ fun Route.ledgerRoutes(){
                 }
 
                 // Combine the transformed records from both collections into a single list
-                val ledgerItems = (invoices + transactions).sortedBy { LocalDate.parse(it.date) }
+                val sortedItems = (invoices + transactions).sortedBy { LocalDate.parse(it.date) }
+
+                var runningBalance = BigDecimal(partner?.openingBalance ?: "0")
+
+                val ledgerItems = sortedItems.map { item ->
+                    val debitAmt = BigDecimal(item.debit)
+                    val creditAmt = BigDecimal(item.credit)
+                    runningBalance = runningBalance.add(debitAmt).subtract(creditAmt)
+                    item.copy(balance = runningBalance.toString())
+                }
 
                 // Respond with the list of invoices with their corresponding partners
                 val jsonResponse = Json.encodeToString(LedgerJson(partner, ledgerItems))

@@ -11,8 +11,7 @@ import org.litote.kmongo.and
 import com.example.models.Database
 
 fun Route.partnerRoutes(){
-    val database = Database()
-    val partnersCollection = database.db.getCollection<Partner>("partners")
+    val partnersCollection = Database.db.getCollection<Partner>("partners")
 
     route("/partners"){
         // Route to add a partner

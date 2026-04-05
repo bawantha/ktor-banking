@@ -10,8 +10,7 @@ import org.litote.kmongo.eq
 import com.example.models.Database
 
 fun Route.productRoutes(){
-    val database = Database()
-    val productsCollection = database.db.getCollection<Product>("products")
+    val productsCollection = Database.db.getCollection<Product>("products")
 
     route("/products"){
         // Route to add a product
