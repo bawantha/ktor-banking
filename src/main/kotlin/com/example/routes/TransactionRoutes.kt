@@ -15,9 +15,8 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 fun Route.transactionRoutes(){
-    val database = Database()
-    val transactionsCollection = database.db.getCollection<Transaction>("transactions")
-    val partnersCollection = database.db.getCollection<Partner>("partners")
+    val transactionsCollection = Database.db.getCollection<Transaction>("transactions")
+    val partnersCollection = Database.db.getCollection<Partner>("partners")
 
     route("/transactions") {
         // Route to add a transaction
@@ -41,7 +40,7 @@ fun Route.transactionRoutes(){
         get {
             val type = call.request.queryParameters["type"] ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing Type")
             try {
-                // Fetch all sales invoices
+                // Fetch all transactions
                 val transactions = when (type) {
                     "payment" -> {
                         // Fetch transactions with type "BPV" and "CPV"
@@ -68,7 +67,7 @@ fun Route.transactionRoutes(){
                 }
                 val responseList = mutableListOf<TransactionJson>()
                 for (transaction in transactions) {
-                    // Retrieve the partner for each invoice based on partnerId
+                    // Retrieve the partner for each transaction
                     val partner = when (type) {
                         "payment" -> {
                             partnersCollection.findOneById(transaction.paymentTo)
@@ -82,7 +81,7 @@ fun Route.transactionRoutes(){
                     // Add each JsonResponse object to the list
                     responseList.add(jsonResponse)
                 }
-                // Respond with the list of invoices with their corresponding partners
+                // Respond with the list of transactions with their corresponding partners
                 val jsonResponse = Json.encodeToString(responseList)
                 call.respond(HttpStatusCode.OK, jsonResponse)
             } catch (e: Exception) {

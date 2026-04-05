@@ -14,9 +14,8 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 fun Route.invoiceRoutes(){
-    val database = Database()
-    val invoicesCollection = database.db.getCollection<Invoice>("invoices")
-    val partnersCollection = database.db.getCollection<Partner>("partners")
+    val invoicesCollection = Database.db.getCollection<Invoice>("invoices")
+    val partnersCollection = Database.db.getCollection<Partner>("partners")
 
     route("/invoices"){
         // Route to add an invoice
@@ -55,9 +54,7 @@ fun Route.invoiceRoutes(){
 
                         if (partner != null) {
                             // Include the partner information in the response
-                            val partnerJson = Json.encodeToString(partner)
-                            val invoiceJson = Json.encodeToString(invoice)
-                            val jsonResponse = """{"partner": $partnerJson, "invoice": $invoiceJson}"""
+                            val jsonResponse = Json.encodeToString(InvoiceJson(partner, invoice))
 
                             // Respond with a map containing both objects
                             call.respondText(jsonResponse, ContentType.Application.Json)
