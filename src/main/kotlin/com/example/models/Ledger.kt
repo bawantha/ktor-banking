@@ -8,10 +8,14 @@ data class LedgerItem(
     val instrumentNo: String,
     val reference: String,
     val description: String,
-    val quantity: String,
-    val debit: String,
-    val credit: String,
-    val balance: String,
+    @Serializable(with = BigDecimalSerializer::class)
+    val quantity: java.math.BigDecimal,
+    @Serializable(with = BigDecimalSerializer::class)
+    val debit: java.math.BigDecimal,
+    @Serializable(with = BigDecimalSerializer::class)
+    val credit: java.math.BigDecimal,
+    @Serializable(with = BigDecimalSerializer::class)
+    val balance: java.math.BigDecimal,
 )
 
 @Serializable
