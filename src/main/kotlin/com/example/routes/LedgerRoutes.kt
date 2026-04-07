@@ -40,7 +40,7 @@ fun Route.ledgerRoutes(){
             try {
                 val partner = partnersCollection.findOneById(partnerId)
 
-                var runningBalance = BigDecimal(partner?.openingBalance ?: "0")
+                var runningBalance = partner?.openingBalance ?: BigDecimal.ZERO
 
                 // Fetch all invoices
                 val allInvoices = invoicesCollection.find(Invoice::partnerId eq partnerId).toList()
@@ -52,7 +52,7 @@ fun Route.ledgerRoutes(){
                 allInvoices.forEach { invoice ->
                     val invoiceDate = dateFormat.parse(invoice.invoiceDate)
                     if (invoiceDate.before(startDate)) {
-                        val amount = try { BigDecimal(invoice.invoiceTotal) } catch (e: Exception) { BigDecimal.ZERO }
+                        val amount = invoice.invoiceTotal
                         if (invoice.type == "sales") {
                             runningBalance = runningBalance.add(amount) // Debit
                         } else if (invoice.type == "purchase") {
@@ -64,7 +64,7 @@ fun Route.ledgerRoutes(){
                 allTransactions.forEach { transaction ->
                     val txDate = dateFormat.parse(transaction.date)
                     if (txDate.before(startDate)) {
-                        val amount = try { BigDecimal(transaction.amount) } catch (e: Exception) { BigDecimal.ZERO }
+                        val amount = transaction.amount
                         when (transaction.type) {
                             "BRV", "CRV" -> runningBalance = runningBalance.subtract(amount) // Credit (Receipt)
                             "BPV", "CPV" -> runningBalance = runningBalance.add(amount) // Debit (Payment)
@@ -80,7 +80,7 @@ fun Route.ledgerRoutes(){
 
                 // Map all invoices to ledger items
                 val invoices = filteredInvoices.map { invoice ->
-                    val amount = try { BigDecimal(invoice.invoiceTotal) } catch (e: Exception) { BigDecimal.ZERO }
+                    val amount = invoice.invoiceTotal
                     val debit = if (invoice.type == "sales") amount else BigDecimal.ZERO
                     val credit = if (invoice.type == "purchase") amount else BigDecimal.ZERO
                     LedgerItem(
@@ -88,10 +88,10 @@ fun Route.ledgerRoutes(){
                         instrumentNo = invoice.invoiceNo,
                         reference = invoice.reference,
                         description = if (invoice.type == "sales") "Sales" else "Purchase",
-                        quantity = invoice.invoiceItems.count().toString(),
-                        debit = debit.toString(),
-                        credit = credit.toString(),
-                        balance = "0" // to be updated below
+                        quantity = BigDecimal(invoice.invoiceItems.count()),
+                        debit = debit,
+                        credit = credit,
+                        balance = BigDecimal.ZERO // to be updated below
                     )
                 }
 
@@ -103,7 +103,7 @@ fun Route.ledgerRoutes(){
 
                 // Map all transactions to ledger items
                 val transactions = filteredTransactions.map { transaction ->
-                    val amount = try { BigDecimal(transaction.amount) } catch (e: Exception) { BigDecimal.ZERO }
+                    val amount = transaction.amount
                     val (description, debit, credit) = when (transaction.type) {
                         "BRV", "CRV" -> Triple("Receipt", BigDecimal.ZERO, amount)
                         "BPV", "CPV" -> Triple("Payment", amount, BigDecimal.ZERO)
@@ -115,10 +115,10 @@ fun Route.ledgerRoutes(){
                         instrumentNo = transaction.voucherNo,
                         reference = transaction.reference,
                         description = description,
-                        quantity = "0",
-                        debit = debit.toString(),
-                        credit = credit.toString(),
-                        balance = "0", // to be updated below
+                        quantity = BigDecimal.ZERO,
+                        debit = debit,
+                        credit = credit,
+                        balance = BigDecimal.ZERO, // to be updated below
                     )
                 }
 
@@ -134,19 +134,19 @@ fun Route.ledgerRoutes(){
                         instrumentNo = "",
                         reference = "",
                         description = "Opening Balance",
-                        quantity = "0",
-                        debit = "0",
-                        credit = "0",
-                        balance = runningBalance.toString()
+                        quantity = BigDecimal.ZERO,
+                        debit = BigDecimal.ZERO,
+                        credit = BigDecimal.ZERO,
+                        balance = runningBalance
                     )
                 )
 
                 // Update running balance and construct the final list
                 for (item in sortedItems) {
-                    val debitAmt = try { BigDecimal(item.debit) } catch (e: Exception) { BigDecimal.ZERO }
-                    val creditAmt = try { BigDecimal(item.credit) } catch (e: Exception) { BigDecimal.ZERO }
+                    val debitAmt = item.debit
+                    val creditAmt = item.credit
                     runningBalance = runningBalance.add(debitAmt).subtract(creditAmt)
-                    ledgerItemsList.add(item.copy(balance = runningBalance.toString()))
+                    ledgerItemsList.add(item.copy(balance = runningBalance))
                 }
 
                 // Respond with the list of invoices with their corresponding partners

@@ -11,7 +11,8 @@ data class Partner(
     val email: String,
     val status: String,
     val contactNo: String,
-    val openingBalance: String,
+    @Serializable(with = BigDecimalSerializer::class)
+    val openingBalance: java.math.BigDecimal,
     val address: String,
     val repName: String,
     val repContact: String,

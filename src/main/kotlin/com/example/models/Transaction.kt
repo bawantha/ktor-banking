@@ -10,7 +10,8 @@ data class Transaction(
     val date: String,
     val paymentTo: String,
     val receiptFrom: String,
-    val amount: String,
+    @Serializable(with = BigDecimalSerializer::class)
+    val amount: java.math.BigDecimal,
     val reference: String
 )
 

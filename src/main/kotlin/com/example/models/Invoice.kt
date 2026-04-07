@@ -6,11 +6,16 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class InvoiceItem(
     val productName: String,
-    val quantity: String,
-    val rate: String,
-    val valueOfSupplies: String,
-    val salesTax: String,
-    val netAmount: String,
+    @Serializable(with = BigDecimalSerializer::class)
+    val quantity: java.math.BigDecimal,
+    @Serializable(with = BigDecimalSerializer::class)
+    val rate: java.math.BigDecimal,
+    @Serializable(with = BigDecimalSerializer::class)
+    val valueOfSupplies: java.math.BigDecimal,
+    @Serializable(with = BigDecimalSerializer::class)
+    val salesTax: java.math.BigDecimal,
+    @Serializable(with = BigDecimalSerializer::class)
+    val netAmount: java.math.BigDecimal,
 )
 
 @Serializable
@@ -23,7 +28,8 @@ data class Invoice(
     val partnerId: String,
     val creditTerm: String,
     val reference: String,
-    val invoiceTotal: String,
+    @Serializable(with = BigDecimalSerializer::class)
+    val invoiceTotal: java.math.BigDecimal,
     val invoiceItems: List<InvoiceItem>,
 )
 
