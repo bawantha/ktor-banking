@@ -30,57 +30,58 @@ fun Route.partnerRoutes(){
             } catch (e: ContentTransformationException) {
                 call.respond(HttpStatusCode.BadRequest, "Invalid input data format.")
             }
-            put("{id}") {
-                val id = call.parameters["id"] ?: return@put call.respond(HttpStatusCode.BadRequest, "Missing ID")
+        }
 
-                try {
-                    val updatedPartner = call.receive<Partner>()
+        put("{id}") {
+            val id = call.parameters["id"] ?: return@put call.respond(HttpStatusCode.BadRequest, "Missing ID")
 
-                    // Update the partner in the MongoDB collection
-                    val filter = Partner::_id eq id
-                    val updateResult = partnersCollection.replaceOne(filter, updatedPartner)
+            try {
+                val updatedPartner = call.receive<Partner>()
 
-                    if (updateResult.matchedCount > 0) {
-                        call.respond(HttpStatusCode.OK, "Partner updated successfully.")
+                // Update the partner in the MongoDB collection
+                val filter = Partner::_id eq id
+                val updateResult = partnersCollection.replaceOne(filter, updatedPartner)
+
+                if (updateResult.matchedCount > 0) {
+                    call.respond(HttpStatusCode.OK, "Partner updated successfully.")
+                } else {
+                    call.respond(HttpStatusCode.NotFound, "Partner not found.")
+                }
+            } catch (e: ContentTransformationException) {
+                call.respond(HttpStatusCode.BadRequest, "Invalid input data format.")
+            }
+        }
+
+        get {
+            val type = call.request.queryParameters["type"]
+            val id = call.request.queryParameters["id"]
+            val statusParam = call.request.queryParameters["status"]
+            try {
+                if (id != null) {
+                    // Retrieve a partner by ID (ignoring the 'type' parameter)
+                    val partner = partnersCollection.findOneById(id)
+                    if (partner != null) {
+                        call.respond(partner)
                     } else {
                         call.respond(HttpStatusCode.NotFound, "Partner not found.")
                     }
-                } catch (e: ContentTransformationException) {
-                    call.respond(HttpStatusCode.BadRequest, "Invalid input data format.")
-                }
-            }
-
-            get {
-                val type = call.request.queryParameters["type"]
-                val id = call.request.queryParameters["id"]
-                val statusParam = call.request.queryParameters["status"]
-                try {
-                    if (id != null) {
-                        // Retrieve a partner by ID (ignoring the 'type' parameter)
-                        val partner = partnersCollection.findOneById(id)
-                        if (partner != null) {
-                            call.respond(partner)
+                } else if (type != null) {
+                    // No ID parameter, retrieve partners based on type and status
+                    val partners: List<Partner> =
+                        if (statusParam != null) {
+                            partnersCollection.find(and(Partner::type eq type, Partner::status eq statusParam)).toList()
                         } else {
-                            call.respond(HttpStatusCode.NotFound, "Partner not found.")
+                            partnersCollection.find(Partner::type eq type).toList()
                         }
-                    } else if (type != null) {
-                        // No ID parameter, retrieve partners based on type and status
-                        val partners: List<Partner> =
-                            if (statusParam != null) {
-                                partnersCollection.find(and(Partner::type eq type, Partner::status eq statusParam)).toList()
-                            } else {
-                                partnersCollection.find(Partner::type eq type).toList()
-                            }
-                        call.respond(HttpStatusCode.OK, partners)
-                    } else {
-                        // Retrieve all partners
-                        val partners = partnersCollection.find().toList()
-                        call.respond(HttpStatusCode.OK, partners)
-                    }
-                } catch (e: Exception) {
-                    call.respond(HttpStatusCode.InternalServerError, "Failed to retrieve partners.")
+                    call.respond(HttpStatusCode.OK, partners)
+                } else {
+                    // Retrieve all partners
+                    val partners = partnersCollection.find().toList()
+                    call.respond(HttpStatusCode.OK, partners)
                 }
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.InternalServerError, "Failed to retrieve partners.")
             }
-    }
         }
+    }
 }
