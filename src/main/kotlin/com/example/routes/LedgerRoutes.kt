@@ -66,8 +66,24 @@ fun Route.ledgerRoutes(){
                     if (txDate.before(startDate)) {
                         val amount = transaction.amount
                         when (transaction.type) {
-                            "BRV", "CRV" -> runningBalance = runningBalance.subtract(amount) // Credit (Receipt)
-                            "BPV", "CPV" -> runningBalance = runningBalance.add(amount) // Debit (Payment)
+                            "BRV", "CRV" -> {
+                                if (transaction.receiptFrom == partnerId) {
+                                    runningBalance = runningBalance.subtract(amount) // Credit (Receipt)
+                                }
+                            }
+                            "BPV", "CPV" -> {
+                                if (transaction.paymentTo == partnerId) {
+                                    runningBalance = runningBalance.add(amount) // Debit (Payment)
+                                }
+                            }
+                            "JV" -> {
+                                if (transaction.paymentTo == partnerId) {
+                                    runningBalance = runningBalance.add(amount) // Debit
+                                }
+                                if (transaction.receiptFrom == partnerId) {
+                                    runningBalance = runningBalance.subtract(amount) // Credit
+                                }
+                            }
                         }
                     }
                 }
@@ -102,12 +118,49 @@ fun Route.ledgerRoutes(){
                 }
 
                 // Map all transactions to ledger items
-                val transactions = filteredTransactions.map { transaction ->
+                val transactions = filteredTransactions.mapNotNull { transaction ->
                     val amount = transaction.amount
-                    val (description, debit, credit) = when (transaction.type) {
-                        "BRV", "CRV" -> Triple("Receipt", BigDecimal.ZERO, amount)
-                        "BPV", "CPV" -> Triple("Payment", amount, BigDecimal.ZERO)
-                        else -> Triple("", BigDecimal.ZERO, BigDecimal.ZERO)
+                    val debit: BigDecimal
+                    val credit: BigDecimal
+                    val description: String
+
+                    when (transaction.type) {
+                        "BRV", "CRV" -> {
+                            if (transaction.receiptFrom == partnerId) {
+                                description = "Receipt"
+                                debit = BigDecimal.ZERO
+                                credit = amount
+                            } else {
+                                return@mapNotNull null
+                            }
+                        }
+                        "BPV", "CPV" -> {
+                            if (transaction.paymentTo == partnerId) {
+                                description = "Payment"
+                                debit = amount
+                                credit = BigDecimal.ZERO
+                            } else {
+                                return@mapNotNull null
+                            }
+                        }
+                        "JV" -> {
+                            if (transaction.paymentTo == partnerId && transaction.receiptFrom == partnerId) {
+                                description = "Transfer"
+                                debit = amount
+                                credit = amount
+                            } else if (transaction.paymentTo == partnerId) {
+                                description = "Transfer In"
+                                debit = amount
+                                credit = BigDecimal.ZERO
+                            } else if (transaction.receiptFrom == partnerId) {
+                                description = "Transfer Out"
+                                debit = BigDecimal.ZERO
+                                credit = amount
+                            } else {
+                                return@mapNotNull null
+                            }
+                        }
+                        else -> return@mapNotNull null
                     }
 
                     LedgerItem(
