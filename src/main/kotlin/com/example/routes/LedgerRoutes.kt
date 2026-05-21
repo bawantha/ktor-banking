@@ -104,7 +104,7 @@ fun Route.ledgerRoutes(){
                         instrumentNo = invoice.invoiceNo,
                         reference = invoice.reference,
                         description = if (invoice.type == "sales") "Sales" else "Purchase",
-                        quantity = BigDecimal(invoice.invoiceItems.count()),
+                        quantity = invoice.invoiceItems.fold(BigDecimal.ZERO) { acc, item -> acc.add(item.quantity) },
                         debit = debit,
                         credit = credit,
                         balance = BigDecimal.ZERO // to be updated below
