@@ -16,7 +16,10 @@ fun Application.configureHTTP() {
         allowHeader(HttpHeaders.ContentType)
 
         //allowNonSimpleContentTypes = true
-        anyHost() // @TODO: Don't do this in production if possible. Try to limit it.
+        allowHost("localhost:8080")
+        allowHost("localhost:3000")
+        allowHost("127.0.0.1:8080")
+        allowHost("127.0.0.1:3000")
         allowCredentials = true
     }
 }
