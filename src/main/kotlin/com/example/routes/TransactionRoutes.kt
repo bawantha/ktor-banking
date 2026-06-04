@@ -60,6 +60,12 @@ fun Route.transactionRoutes(){
                             )
                         ).toList()
                     }
+                    "journal" -> {
+                        // Fetch transactions with type "JV"
+                        transactionsCollection.find(
+                            Transaction::type eq "JV"
+                        ).toList()
+                    }
                     else -> {
                         // If no valid type parameter is provided, return a BadRequest
                         return@get call.respond(HttpStatusCode.BadRequest, "Invalid Type")
@@ -75,6 +81,7 @@ fun Route.transactionRoutes(){
                         "receipt" -> {
                             partnersCollection.findOneById(transaction.receiptFrom)
                         }
+                        "journal" -> null
                         else -> null
                     }
                     val jsonResponse = TransactionJson(partner, transaction)
