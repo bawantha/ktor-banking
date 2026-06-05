@@ -143,6 +143,43 @@ paths:
                   value: "Product not found."
   /transactions:
     # Get Transactions
+    get:
+      description: "Route to get transaction(s)"
+      parameters:
+        - name: "type"
+          in: "query"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  type: "object" # Using inline object or ref as appropriate
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Missing Type"
+                Example#2:
+                  value: "Invalid Type"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Failed to retrieve transactions."
 
     # Add Transaction
     post:
