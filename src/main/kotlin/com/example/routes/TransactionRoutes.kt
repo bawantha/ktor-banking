@@ -36,56 +36,67 @@ fun Route.transactionRoutes(){
                 call.respond(HttpStatusCode.BadRequest, "Invalid data format.")
             }
         }
-        // Route to get all transactions
+        // Route to get transaction(s)
         get {
-            val type = call.request.queryParameters["type"] ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing Type")
+            val type = call.request.queryParameters["type"]
+            val id = call.request.queryParameters["id"]
+
             try {
-                // Fetch all transactions
-                val transactions = when (type) {
-                    "payment" -> {
-                        // Fetch transactions with type "BPV" and "CPV"
-                        transactionsCollection.find(
+                if (id != null) {
+                    val transaction = transactionsCollection.findOneById(id)
+
+                    if (transaction != null) {
+                        val partnerId = when (transaction.type) {
+                            "BPV", "CPV" -> transaction.paymentTo
+                            "BRV", "CRV" -> transaction.receiptFrom
+                            "JV" -> if (transaction.paymentTo.isNotBlank() && transaction.paymentTo != "null") transaction.paymentTo else transaction.receiptFrom
+                            else -> null
+                        }
+                        val partner = partnerId?.takeIf { it.isNotBlank() && it != "null" }?.let { partnersCollection.findOneById(it) }
+
+                        val jsonResponse = Json.encodeToString(TransactionJson(partner, transaction))
+                        call.respondText(jsonResponse, ContentType.Application.Json)
+                    } else {
+                        call.respond(HttpStatusCode.NotFound, "Transaction not found.")
+                    }
+                } else {
+                    val transactions = when (type) {
+                        "payment" -> transactionsCollection.find(
                             or(
                                 Transaction::type eq "BPV",
                                 Transaction::type eq "CPV"
                             )
                         ).toList()
-                    }
-                    "receipt" -> {
-                        // Fetch transactions with type "BRV" and "CRV"
-                        transactionsCollection.find(
+                        "receipt" -> transactionsCollection.find(
                             or(
                                 Transaction::type eq "BRV",
                                 Transaction::type eq "CRV"
                             )
                         ).toList()
+                        "journal" -> transactionsCollection.find(
+                            Transaction::type eq "JV"
+                        ).toList()
+                        null -> transactionsCollection.find().toList()
+                        else -> return@get call.respond(HttpStatusCode.BadRequest, "Invalid Type")
                     }
-                    else -> {
-                        // If no valid type parameter is provided, return a BadRequest
-                        return@get call.respond(HttpStatusCode.BadRequest, "Invalid Type")
-                    }
-                }
-                val responseList = mutableListOf<TransactionJson>()
-                for (transaction in transactions) {
-                    // Retrieve the partner for each transaction
-                    val partner = when (type) {
-                        "payment" -> {
-                            partnersCollection.findOneById(transaction.paymentTo)
+
+                    val responseList = mutableListOf<TransactionJson>()
+                    for (transaction in transactions) {
+                        val partnerId = when (transaction.type) {
+                            "BPV", "CPV" -> transaction.paymentTo
+                            "BRV", "CRV" -> transaction.receiptFrom
+                            "JV" -> if (transaction.paymentTo.isNotBlank() && transaction.paymentTo != "null") transaction.paymentTo else transaction.receiptFrom
+                            else -> null
                         }
-                        "receipt" -> {
-                            partnersCollection.findOneById(transaction.receiptFrom)
-                        }
-                        else -> null
+                        val partner = partnerId?.takeIf { it.isNotBlank() && it != "null" }?.let { partnersCollection.findOneById(it) }
+
+                        responseList.add(TransactionJson(partner, transaction))
                     }
-                    val jsonResponse = TransactionJson(partner, transaction)
-                    // Add each JsonResponse object to the list
-                    responseList.add(jsonResponse)
+                    val jsonResponse = Json.encodeToString(responseList)
+                    call.respond(HttpStatusCode.OK, jsonResponse)
                 }
-                // Respond with the list of transactions with their corresponding partners
-                val jsonResponse = Json.encodeToString(responseList)
-                call.respond(HttpStatusCode.OK, jsonResponse)
             } catch (e: Exception) {
-                call.respond(HttpStatusCode.InternalServerError, "Failed to retrieve ${type}s.")
+                call.respond(HttpStatusCode.InternalServerError, "Failed to retrieve transaction(s).")
             }
         }
     }
