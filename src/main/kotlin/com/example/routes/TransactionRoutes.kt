@@ -49,7 +49,6 @@ fun Route.transactionRoutes(){
                         val partnerId = when (transaction.type) {
                             "BPV", "CPV" -> transaction.paymentTo
                             "BRV", "CRV" -> transaction.receiptFrom
-                            "JV" -> if (transaction.paymentTo.isNotBlank() && transaction.paymentTo != "null") transaction.paymentTo else transaction.receiptFrom
                             else -> null
                         }
                         val partner = partnerId?.takeIf { it.isNotBlank() && it != "null" }?.let { partnersCollection.findOneById(it) }
@@ -85,7 +84,6 @@ fun Route.transactionRoutes(){
                         val partnerId = when (transaction.type) {
                             "BPV", "CPV" -> transaction.paymentTo
                             "BRV", "CRV" -> transaction.receiptFrom
-                            "JV" -> if (transaction.paymentTo.isNotBlank() && transaction.paymentTo != "null") transaction.paymentTo else transaction.receiptFrom
                             else -> null
                         }
                         val partner = partnerId?.takeIf { it.isNotBlank() && it != "null" }?.let { partnersCollection.findOneById(it) }
