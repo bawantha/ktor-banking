@@ -203,7 +203,7 @@ fun Route.ledgerRoutes(){
                 }
 
                 // Respond with the list of invoices with their corresponding partners
-                val jsonResponse = Json.encodeToString(LedgerJson(partner, ledgerItemsList))
+                val jsonResponse = LedgerJson(partner, ledgerItemsList)
                 call.respond(HttpStatusCode.OK, jsonResponse)
             } catch (e: Exception) {
                 call.respond(HttpStatusCode.InternalServerError, "Failed to retrieve invoices.")

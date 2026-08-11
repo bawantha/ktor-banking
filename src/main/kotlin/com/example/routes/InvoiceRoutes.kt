@@ -54,10 +54,10 @@ fun Route.invoiceRoutes(){
 
                         if (partner != null) {
                             // Include the partner information in the response
-                            val jsonResponse = Json.encodeToString(InvoiceJson(partner, invoice))
+                            val jsonResponse = InvoiceJson(partner, invoice)
 
                             // Respond with a map containing both objects
-                            call.respondText(jsonResponse, ContentType.Application.Json)
+                            call.respond(HttpStatusCode.OK, jsonResponse)
                         } else {
                             call.respond(HttpStatusCode.NotFound, "Partner not found.")
                         }
@@ -88,8 +88,7 @@ fun Route.invoiceRoutes(){
                         responseList.add(jsonResponse)
                     }
 
-                    val jsonResponse = Json.encodeToString(responseList)
-                    call.respond(HttpStatusCode.OK, jsonResponse)
+                    call.respond(HttpStatusCode.OK, responseList)
                 }
             } catch (e: Exception) {
                 call.respond(HttpStatusCode.InternalServerError, "Failed to retrieve invoice(s).")

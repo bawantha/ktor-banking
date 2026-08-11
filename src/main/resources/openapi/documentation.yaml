@@ -1,588 +1,625 @@
-openapi: "3.0.3"
+openapi: 3.0.3
 info:
-  title: "FinGenius"
-  description: "Financial Application (Backend)"
-  version: "1.0.0"
+  title: FinGenius
+  description: Financial Application (Backend)
+  version: 1.0.0
 servers:
-  - url: "/"
+- url: /
 paths:
   /json/kotlinx-serialization:
     get:
-      description: ""
+      description: ''
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/Map_String"
+                $ref: '#/components/schemas/Map_String'
   /products:
-    # Get Product(s)
     get:
-      description: "Route to get product(s)"
+      description: Route to get product(s)
       parameters:
-        - name: "id"
-          in: "query"
-          required: false
-          schema:
-            type: "string"
-        - name: "status"
-          in: "query"
-          required: false
-          schema:
-            type: "string"
+      - name: id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           content:
             '*/*':
               schema:
-                type: "array"
+                type: array
                 items:
-                  $ref: "#/components/schemas/Product"
-        "404":
-          description: "Not Found"
+                  $ref: '#/components/schemas/Product'
+        '404':
+          description: Not Found
           content:
             '*/*':
               schema:
-                type: "string"
+                type: string
               examples:
                 Example#1:
-                  value: "Product not found."
-        "500":
-          description: "Internal Server Error"
+                  value: Product not found.
+        '500':
+          description: Internal Server Error
           content:
             '*/*':
               schema:
-                type: "string"
+                type: string
               examples:
                 Example#1:
-                  value: "Failed to retrieve product(s)."
-    # Add Product
+                  value: Failed to retrieve product(s).
     post:
-      description: "Route to add a product"
+      description: Route to add a product
       requestBody:
         content:
           '*/*':
             schema:
-              $ref: "#/components/schemas/Product"
+              $ref: '#/components/schemas/Product'
         required: true
       responses:
-        "201":
-          description: "Created"
+        '201':
+          description: Created
           content:
             '*/*':
               schema:
-                type: "string"
+                type: string
               examples:
                 Example#1:
-                  value: "Product added successfully."
-        "500":
-          description: "Internal Server Error"
+                  value: Product added successfully.
+        '500':
+          description: Internal Server Error
           content:
             '*/*':
               schema:
-                type: "string"
+                type: string
               examples:
                 Example#1:
-                  value: "Failed to add product."
-        "400":
-          description: "Bad Request"
+                  value: Failed to add product.
+        '400':
+          description: Bad Request
           content:
             '*/*':
               schema:
-                type: "string"
+                type: string
               examples:
                 Example#1:
-                  value: "Invalid product data format."
-  # Edit Product
+                  value: Invalid product data format.
   /products/{id}:
     put:
-      description: "Route to edit a product"
+      description: Route to edit a product
       parameters:
-        - name: "id"
-          in: "path"
-          required: true
-          schema:
-            type: "string"
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           '*/*':
             schema:
-              $ref: "#/components/schemas/Product"
+              $ref: '#/components/schemas/Product'
         required: true
       responses:
-        "400":
-          description: "Bad Request"
+        '400':
+          description: Bad Request
           content:
             '*/*':
               schema:
-                type: "string"
+                type: string
               examples:
                 Example#1:
-                  value: "Invalid product data format."
+                  value: Invalid product data format.
                 Example#2:
-                  value: "Missing ID"
-        "200":
-          description: "OK"
+                  value: Missing ID
+        '200':
+          description: OK
           content:
             '*/*':
               schema:
-                type: "string"
+                type: string
               examples:
                 Example#1:
-                  value: "Product updated successfully."
-        "404":
-          description: "Not Found"
+                  value: Product updated successfully.
+        '404':
+          description: Not Found
           content:
             '*/*':
               schema:
-                type: "string"
+                type: string
               examples:
                 Example#1:
-                  value: "Product not found."
+                  value: Product not found.
   /transactions:
-    # Get Transactions
     get:
-      description: "Route to get transaction(s)"
+      description: Route to get transaction(s)
       parameters:
-        - name: "type"
-          in: "query"
-          required: false
-          schema:
-            type: "string"
-        - name: "id"
-          in: "query"
-          required: false
-          schema:
-            type: "string"
+      - name: type
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: id
+        in: query
+        required: false
+        schema:
+          type: string
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           content:
             '*/*':
               schema:
-                type: "string"
-        "404":
-          description: "Not Found"
+                type: array
+                items:
+                  $ref: '#/components/schemas/TransactionJson'
+        '404':
+          description: Not Found
           content:
             '*/*':
               schema:
-                type: "string"
+                type: string
               examples:
                 Example#1:
-                  value: "Transaction not found."
-        "500":
-          description: "Internal Server Error"
+                  value: Transaction not found.
+        '500':
+          description: Internal Server Error
           content:
             '*/*':
               schema:
-                type: "string"
+                type: string
               examples:
                 Example#1:
-                  value: "Failed to retrieve transaction(s)."
-
-    # Add Transaction
+                  value: Failed to retrieve transaction(s).
     post:
-      description: "Route to add a transaction"
+      description: Route to add a transaction
       requestBody:
         content:
           '*/*':
             schema:
-              $ref: "#/components/schemas/Transaction"
+              $ref: '#/components/schemas/Transaction'
         required: true
       responses:
-        "201":
-          description: "Created"
+        '201':
+          description: Created
           content:
             '*/*':
               schema:
-                type: "string"
+                type: string
               examples:
                 Example#1:
-                  value: "Transaction added successfully."
-        "500":
-          description: "Internal Server Error"
+                  value: Transaction added successfully.
+        '500':
+          description: Internal Server Error
           content:
             '*/*':
               schema:
-                type: "string"
+                type: string
               examples:
                 Example#1:
-                  value: "Failed to add transaction."
-        "400":
-          description: "Bad Request"
+                  value: Failed to add transaction.
+        '400':
+          description: Bad Request
           content:
             '*/*':
               schema:
-                type: "string"
+                type: string
               examples:
                 Example#1:
-                  value: "Invalid data format."
+                  value: Invalid data format.
   /ledger:
-    # Get Ledger Items
     get:
-      description: "Route to get ledger items"
+      description: Route to get ledger items
       parameters:
-        - name: "partnerId"
-          in: "query"
-          required: true
-          schema:
-            type: "string"
-        - name: "startDate"
-          in: "query"
-          required: true
-          schema:
-            type: "string"
-        - name: "endDate"
-          in: "query"
-          required: true
-          schema:
-            type: "string"
+      - name: partnerId
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: startDate
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: endDate
+        in: query
+        required: true
+        schema:
+          type: string
       responses:
-        "400":
-          description: "Bad Request"
+        '400':
+          description: Bad Request
           content:
             '*/*':
               schema:
-                type: "string"
+                type: string
               examples:
                 Example#1:
-                  value: "Missing End Date"
+                  value: Missing End Date
                 Example#2:
-                  value: "Missing Start Date"
+                  value: Missing Start Date
                 Example#3:
-                  value: "Missing Partner ID"
-        "200":
-          description: "OK"
+                  value: Missing Partner ID
+        '200':
+          description: OK
           content:
             '*/*':
               schema:
-                type: "string"
-        "500":
-          description: "Internal Server Error"
+                $ref: '#/components/schemas/LedgerJson'
+        '500':
+          description: Internal Server Error
           content:
             '*/*':
               schema:
-                type: "string"
+                type: string
               examples:
                 Example#1:
-                  value: "Failed to retrieve invoices."
+                  value: Failed to retrieve invoices.
   /invoices:
-    # Get Invoices
     get:
-      description: "Route to get invoice(s)"
+      description: Route to get invoice(s)
       parameters:
-        - name: "type"
-          in: "query"
-          required: false
-          schema:
-            type: "string"
-        - name: "id"
-          in: "query"
-          required: false
-          schema:
-            type: "string"
+      - name: type
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: id
+        in: query
+        required: false
+        schema:
+          type: string
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           content:
             '*/*':
               schema:
-                type: "string"
-        "404":
-          description: "Not Found"
+                type: array
+                items:
+                  $ref: '#/components/schemas/InvoiceJson'
+        '404':
+          description: Not Found
           content:
             '*/*':
               schema:
-                type: "string"
+                type: string
               examples:
                 Example#1:
-                  value: "Invoice not found."
+                  value: Invoice not found.
                 Example#2:
-                  value: "Partner not found."
-        "500":
-          description: "Internal Server Error"
+                  value: Partner not found.
+        '500':
+          description: Internal Server Error
           content:
             '*/*':
               schema:
-                type: "string"
+                type: string
               examples:
                 Example#1:
-                  value: "Failed to retrieve invoice(s)."
-    # Add Invoice
+                  value: Failed to retrieve invoice(s).
     post:
-      description: "Route to add an invoice"
+      description: Route to add an invoice
       requestBody:
         content:
           '*/*':
             schema:
-              $ref: "#/components/schemas/Invoice"
+              $ref: '#/components/schemas/Invoice'
         required: true
       responses:
-        "201":
-          description: "Created"
+        '201':
+          description: Created
           content:
             '*/*':
               schema:
-                type: "string"
+                type: string
               examples:
                 Example#1:
-                  value: "Invoice added successfully."
-        "500":
-          description: "Internal Server Error"
+                  value: Invoice added successfully.
+        '500':
+          description: Internal Server Error
           content:
             '*/*':
               schema:
-                type: "string"
+                type: string
               examples:
                 Example#1:
-                  value: "Failed to add invoice."
-        "400":
-          description: "Bad Request"
+                  value: Failed to add invoice.
+        '400':
+          description: Bad Request
           content:
             '*/*':
               schema:
-                type: "string"
+                type: string
               examples:
                 Example#1:
-                  value: "Invalid data format."
+                  value: Invalid data format.
   /partners:
     post:
-      description: "Route to add a partner"
+      description: Route to add a partner
       requestBody:
         content:
           '*/*':
             schema:
-              $ref: "#/components/schemas/Partner"
+              $ref: '#/components/schemas/Partner'
         required: true
       responses:
-        "201":
-          description: "Created"
+        '201':
+          description: Created
           content:
             '*/*':
               schema:
-                type: "string"
+                type: string
               examples:
                 Example#1:
-                  value: ""
-        "500":
-          description: "Internal Server Error"
+                  value: ''
+        '500':
+          description: Internal Server Error
           content:
             '*/*':
               schema:
-                type: "string"
+                type: string
               examples:
                 Example#1:
-                  value: ""
-        "400":
-          description: "Bad Request"
+                  value: ''
+        '400':
+          description: Bad Request
           content:
             '*/*':
               schema:
-                type: "string"
+                type: string
               examples:
                 Example#1:
-                  value: "Invalid input data format."
+                  value: Invalid input data format.
     get:
-      description: "Route to get partner(s)"
+      description: Route to get partner(s)
       parameters:
-        - name: "type"
-          in: "query"
-          required: false
-          schema:
-            type: "string"
-        - name: "id"
-          in: "query"
-          required: false
-          schema:
-            type: "string"
-        - name: "status"
-          in: "query"
-          required: false
-          schema:
-            type: "string"
+      - name: type
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           content:
             '*/*':
               schema:
-                type: "array"
+                type: array
                 items:
-                  $ref: "#/components/schemas/Partner"
-        "404":
-          description: "Not Found"
+                  $ref: '#/components/schemas/Partner'
+        '404':
+          description: Not Found
           content:
             '*/*':
               schema:
-                type: "string"
+                type: string
               examples:
                 Example#1:
-                  value: "Partner not found."
-        "500":
-          description: "Internal Server Error"
+                  value: Partner not found.
+        '500':
+          description: Internal Server Error
           content:
             '*/*':
               schema:
-                type: "string"
+                type: string
               examples:
                 Example#1:
-                  value: "Failed to retrieve partners."
+                  value: Failed to retrieve partners.
   /partners/{id}:
-      put:
-        description: "Route to edit a partner"
-        parameters:
-          - name: "id"
-            in: "path"
-            required: true
+    put:
+      description: Route to edit a partner
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          '*/*':
             schema:
-              type: "string"
-        requestBody:
+              $ref: '#/components/schemas/Partner'
+        required: true
+      responses:
+        '400':
+          description: Bad Request
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/Partner"
-          required: true
-        responses:
-          "400":
-            description: "Bad Request"
-            content:
-              '*/*':
-                schema:
-                  type: "string"
-                examples:
-                  Example#1:
-                    value: "Invalid input data format."
-                  Example#2:
-                    value: "Missing ID"
-          "200":
-            description: "OK"
-            content:
-              '*/*':
-                schema:
-                  type: "string"
-                examples:
-                  Example#1:
-                    value: "Partner updated successfully."
-          "404":
-            description: "Not Found"
-            content:
-              '*/*':
-                schema:
-                  type: "string"
-                examples:
-                  Example#1:
-                    value: "Partner not found."
+                type: string
+              examples:
+                Example#1:
+                  value: Invalid input data format.
+                Example#2:
+                  value: Missing ID
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+              examples:
+                Example#1:
+                  value: Partner updated successfully.
+        '404':
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: string
+              examples:
+                Example#1:
+                  value: Partner not found.
 components:
   schemas:
     Map:
-      type: "object"
+      type: object
       properties: {}
     Map_String:
-      type: "string"
+      type: string
     Product:
-      type: "object"
+      type: object
       properties:
         _id:
-          type: "string"
+          type: string
         name:
-          type: "string"
+          type: string
         coreCompany:
-          type: "string"
+          type: string
         rate:
-          type: "string"
+          type: string
         status:
-          type: "string"
+          type: string
         taxExempted:
-          type: "string"
+          type: string
         salesTax:
-          type: "string"
+          type: string
         notes:
-          type: "string"
+          type: string
     Transaction:
-      type: "object"
+      type: object
       properties:
         _id:
-          type: "string"
+          type: string
         voucherNo:
-          type: "string"
+          type: string
         type:
-          type: "string"
+          type: string
         date:
-          type: "string"
+          type: string
         paymentTo:
-          type: "string"
+          type: string
         receiptFrom:
-          type: "string"
+          type: string
         amount:
-          type: "string"
+          type: string
         reference:
-          type: "string"
+          type: string
     InvoiceItem:
-      type: "object"
+      type: object
       properties:
         productName:
-          type: "string"
+          type: string
         quantity:
-          type: "string"
+          type: string
         rate:
-          type: "string"
+          type: string
         valueOfSupplies:
-          type: "string"
+          type: string
         salesTax:
-          type: "string"
+          type: string
         netAmount:
-          type: "string"
+          type: string
     Invoice:
-      type: "object"
+      type: object
       properties:
         _id:
-          type: "string"
+          type: string
         type:
-          type: "string"
+          type: string
         invoiceDate:
-          type: "string"
+          type: string
         dueDate:
-          type: "string"
+          type: string
         invoiceNo:
-          type: "string"
+          type: string
         partnerId:
-          type: "string"
+          type: string
         creditTerm:
-          type: "string"
+          type: string
         reference:
-          type: "string"
+          type: string
         invoiceTotal:
-          type: "string"
+          type: string
         invoiceItems:
-          type: "array"
+          type: array
           items:
-            $ref: "#/components/schemas/InvoiceItem"
+            $ref: '#/components/schemas/InvoiceItem'
     Partner:
-      type: "object"
+      type: object
       properties:
         _id:
-          type: "string"
+          type: string
         type:
-          type: "string"
+          type: string
         firstName:
-          type: "string"
+          type: string
         lastName:
-          type: "string"
+          type: string
         email:
-          type: "string"
+          type: string
         status:
-          type: "string"
+          type: string
         contactNo:
-          type: "string"
+          type: string
         openingBalance:
-          type: "string"
+          type: string
         address:
-          type: "string"
+          type: string
         repName:
-          type: "string"
+          type: string
         repContact:
-          type: "string"
+          type: string
         repDesignation:
-          type: "string"
+          type: string
+    LedgerItem:
+      type: object
+      properties:
+        date:
+          type: string
+        instrumentNo:
+          type: string
+        reference:
+          type: string
+        description:
+          type: string
+        quantity:
+          type: string
+        debit:
+          type: string
+        credit:
+          type: string
+        balance:
+          type: string
+    LedgerJson:
+      type: object
+      properties:
+        partner:
+          $ref: '#/components/schemas/Partner'
+        ledgerItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/LedgerItem'
+    TransactionJson:
+      type: object
+      properties:
+        partner:
+          $ref: '#/components/schemas/Partner'
+        transaction:
+          $ref: '#/components/schemas/Transaction'
+    InvoiceJson:
+      type: object
+      properties:
+        partner:
+          $ref: '#/components/schemas/Partner'
+        invoice:
+          $ref: '#/components/schemas/Invoice'
