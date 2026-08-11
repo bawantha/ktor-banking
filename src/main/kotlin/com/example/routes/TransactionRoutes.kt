@@ -54,8 +54,8 @@ fun Route.transactionRoutes(){
                         }
                         val partner = partnerId?.takeIf { it.isNotBlank() && it != "null" }?.let { partnersCollection.findOneById(it) }
 
-                        val jsonResponse = Json.encodeToString(TransactionJson(partner, transaction))
-                        call.respondText(jsonResponse, ContentType.Application.Json)
+                        val jsonResponse = TransactionJson(partner, transaction)
+                        call.respond(HttpStatusCode.OK, jsonResponse)
                     } else {
                         call.respond(HttpStatusCode.NotFound, "Transaction not found.")
                     }
@@ -92,8 +92,7 @@ fun Route.transactionRoutes(){
 
                         responseList.add(TransactionJson(partner, transaction))
                     }
-                    val jsonResponse = Json.encodeToString(responseList)
-                    call.respond(HttpStatusCode.OK, jsonResponse)
+                    call.respond(HttpStatusCode.OK, responseList)
                 }
             } catch (e: Exception) {
                 call.respond(HttpStatusCode.InternalServerError, "Failed to retrieve transaction(s).")
