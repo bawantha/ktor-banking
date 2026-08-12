@@ -10,8 +10,6 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import com.example.models.Database
 import com.example.models.Transaction
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import java.time.LocalDate
 import java.text.SimpleDateFormat
 import org.litote.kmongo.eq
@@ -203,8 +201,7 @@ fun Route.ledgerRoutes(){
                 }
 
                 // Respond with the list of invoices with their corresponding partners
-                val jsonResponse = Json.encodeToString(LedgerJson(partner, ledgerItemsList))
-                call.respond(HttpStatusCode.OK, jsonResponse)
+                call.respond(HttpStatusCode.OK, LedgerJson(partner, ledgerItemsList))
             } catch (e: Exception) {
                 call.respond(HttpStatusCode.InternalServerError, "Failed to retrieve invoices.")
             }
