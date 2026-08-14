@@ -10,8 +10,6 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.litote.kmongo.eq
 import com.example.models.Database
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 fun Route.invoiceRoutes(){
     val invoicesCollection = Database.db.getCollection<Invoice>("invoices")
@@ -54,10 +52,8 @@ fun Route.invoiceRoutes(){
 
                         if (partner != null) {
                             // Include the partner information in the response
-                            val jsonResponse = Json.encodeToString(InvoiceJson(partner, invoice))
-
                             // Respond with a map containing both objects
-                            call.respondText(jsonResponse, ContentType.Application.Json)
+                            call.respond(HttpStatusCode.OK, InvoiceJson(partner, invoice))
                         } else {
                             call.respond(HttpStatusCode.NotFound, "Partner not found.")
                         }
@@ -88,8 +84,7 @@ fun Route.invoiceRoutes(){
                         responseList.add(jsonResponse)
                     }
 
-                    val jsonResponse = Json.encodeToString(responseList)
-                    call.respond(HttpStatusCode.OK, jsonResponse)
+                    call.respond(HttpStatusCode.OK, responseList)
                 }
             } catch (e: Exception) {
                 call.respond(HttpStatusCode.InternalServerError, "Failed to retrieve invoice(s).")
