@@ -11,8 +11,6 @@ import io.ktor.server.routing.*
 import org.litote.kmongo.eq
 import org.litote.kmongo.or
 import com.example.models.Database
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 fun Route.transactionRoutes(){
     val transactionsCollection = Database.db.getCollection<Transaction>("transactions")
@@ -54,8 +52,7 @@ fun Route.transactionRoutes(){
                         }
                         val partner = partnerId?.takeIf { it.isNotBlank() && it != "null" }?.let { partnersCollection.findOneById(it) }
 
-                        val jsonResponse = Json.encodeToString(TransactionJson(partner, transaction))
-                        call.respondText(jsonResponse, ContentType.Application.Json)
+                        call.respond(HttpStatusCode.OK, TransactionJson(partner, transaction))
                     } else {
                         call.respond(HttpStatusCode.NotFound, "Transaction not found.")
                     }
@@ -92,8 +89,7 @@ fun Route.transactionRoutes(){
 
                         responseList.add(TransactionJson(partner, transaction))
                     }
-                    val jsonResponse = Json.encodeToString(responseList)
-                    call.respond(HttpStatusCode.OK, jsonResponse)
+                    call.respond(HttpStatusCode.OK, responseList)
                 }
             } catch (e: Exception) {
                 call.respond(HttpStatusCode.InternalServerError, "Failed to retrieve transaction(s).")
